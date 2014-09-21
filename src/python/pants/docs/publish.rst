@@ -423,12 +423,22 @@ In the above configuration example, the string 'extra_test_jar_example' is a
 key into the product map. In this case, the example task will add additional
 files for publishing to the product map under this key. And ``jar_publish.py``
 will examine the product map, looking for all keys defined here, and publishing
-any additional files found. In addition, the ``jar_publish.py`` file will
-respect several parameters:
+any additional files found.
 
- * ``override_name`` -- allows customization of the name of the additional file
-   published. Specifying a string will completely override the name, or include
-   '``{target_provides_name}``' to tack an addition on to the name.
+Constructing a name for your extra artifact:
+============================================
+By default, pants uses the following scheme when publishing artifacts:
+
+    [artifactId]-[version](-[classifier]).[ext]
+
+The pants plugin publishing system allows a customization of the artifact
+identifier, classifier, and file extension. To customize the name of your extra
+object, you can supply some extra parameters in the ``pants.ini`` file:
+
+ * ``override_name`` -- allows customization of the name (``artifactId``) of
+   the additional file published. Specifying a string will completely override
+   the name, or include '``{target_provides_name}``' to tack an addition on to
+   the pre-existing artifact name. Defaults to the pre-existing artifact name.
 
  * ``classifier`` -- the maven classifier. Can be any arbitrary string, or
    leave this unspecified for nothing.
@@ -440,7 +450,7 @@ parameters, otherwise your extra publish artifact won't have a unique name.
 With the above config in your pants.ini, invoke pants like this, to do a test
 publish:
 
-    yes|WRAPPER_SRCPATH=examples/src/python PANTS_DEV=1 ./pants goal publish examples/src/java/com/pants/examples/hello/greet --no-publish-dryrun --publish-local=~/tmp
+    WRAPPER_SRCPATH=examples/src/python PANTS_DEV=1 ./pants goal publish examples/src/java/com/pants/examples/hello/greet --no-publish-dryrun --publish-local=~/tmp
 
 Now if you examine the ``/tmp`` directory, you'll notice that an extra jar has
 been published for the ``greet`` target:

@@ -14,9 +14,9 @@ from pants_test.tasks.test_base import is_exe
 
 def shared_artifacts(version, extra_jar=None):
   ary = ['ivy-{0}.xml'.format(version),
-            'hello-greet-{0}.jar'.format(version),
-            'hello-greet-{0}.pom'.format(version),
-            'hello-greet-{0}-sources.jar'.format(version)]
+         'hello-greet-{0}.jar'.format(version),
+         'hello-greet-{0}.pom'.format(version),
+         'hello-greet-{0}-sources.jar'.format(version)]
   if extra_jar:
     ary.append(extra_jar)
   return {'com/pants/examples/hello-greet/{0}/'.format(version): ary}

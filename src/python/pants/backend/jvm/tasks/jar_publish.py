@@ -236,7 +236,7 @@ class IvyWriter(DependencyWriter):
 
   def templateargs(self, target_jar, confs=None, extra_confs=None):
     return dict(lib=target_jar.extend(
-        publications=set(confs) if confs else set(),
+        publications=set(confs or []),
         extra_publications=extra_confs if extra_confs else {},
         overrides=None))
 
@@ -552,7 +552,8 @@ class JarPublish(JarTask, ScmPublish):
                                   artifact_ext=artifact_ext)
 
       with safe_open(path(suffix='-CHANGELOG', extension='txt'), 'w') as changelog_file:
-        changelog = u''.join(changelog).encode('utf-8')
+# FIXME
+###        changelog = u''.join(changelog).encode('utf-8')
         changelog_file.write(changelog)
       ivyxml = path(name='ivy', extension='xml')
 
@@ -589,15 +590,6 @@ class JarPublish(JarTask, ScmPublish):
       for extra_product in publish_extras:
         extra_config = publish_extras[extra_product]
 
-        # A lot of flexability is allowed, in naming the extra artifact. Because the name must be
-        # unique, some extra logic is required to ensure that the user supplied at least one
-        # non-default value (thus ensuring a uniquely-named artifact in the end).
-        if 'override_name' in extra_config or 'classifier' in extra_config or 'extension' in extra_config:
-          pass
-        else:
-          raise TaskError("publish_extra for '{0}' most override one of name, classifier, or "
-                          "extension to make a unique object.".format(extra_product))
-
         override_name = jar.name
         if 'override_name' in extra_config:
           # If the supplied string has a '{target_provides_name}' in it, replace it with the
@@ -618,6 +610,9 @@ class JarPublish(JarTask, ScmPublish):
           if ivy_type == DEFAULT_IVY_TYPE:
             ivy_type = extension
 
+        # A lot of flexibility is allowed in naming the extra artifact. Because the name must be
+        # unique, some extra logic is required to ensure that the user supplied at least one
+        # non-default value (thus ensuring a uniquely-named artifact in the end).
         if override_name == jar.name and classifier == DEFAULT_CLASSIFIER and extension == DEFAULT_EXTENSION:
           raise TaskError("publish_extra for '{0}' most override one of name, classifier or "
                           "extension with a non-default value.".format(extra_product))
