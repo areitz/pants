@@ -552,9 +552,7 @@ class JarPublish(JarTask, ScmPublish):
                                   artifact_ext=artifact_ext)
 
       with safe_open(path(suffix='-CHANGELOG', extension='txt'), 'w') as changelog_file:
-# FIXME
-###        changelog = u''.join(changelog).encode('utf-8')
-        changelog_file.write(changelog)
+        changelog_file.write(changelog.encode('utf-8'))
       ivyxml = path(name='ivy', extension='xml')
 
       IvyWriter(get_pushdb).write(tgt, ivyxml, confs=confs, extra_confs=extra_confs)
