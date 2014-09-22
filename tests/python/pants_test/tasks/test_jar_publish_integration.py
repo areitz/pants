@@ -21,7 +21,7 @@ def shared_artifacts(version, extra_jar=None):
          'hello-greet-{0}-sources.jar'.format(version)]
   if extra_jar:
     ary.append(extra_jar)
-  return {'com/pants/examples/hello-greet/{0}/'.format(version): ary}
+  return {'com/pants/testproject/publish/hello-greet/{0}/'.format(version): ary}
 
 def publish_extra_config(unique_config):
   return {
@@ -87,7 +87,7 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
 
   # Collect all the common factors for running a publish_extras test, and execute the test.
   def publish_extras_runner(self, extra_config=None, artifact_name=None):
-    self.publish_test('examples/src/java/com/pants/examples/hello/greet',
+    self.publish_test('testprojects/src/java/com/pants/testproject/publish/hello/greet',
                       shared_artifacts('0.0.1-SNAPSHOT', artifact_name),
                       ['com.pants.testproject.publish/hello-greet/publish.properties'],
                       extra_options=['--doc-javadoc-skip'],
