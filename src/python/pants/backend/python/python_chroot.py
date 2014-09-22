@@ -62,7 +62,8 @@ class PythonChroot(object):
     self._extra_requirements = list(extra_requirements) if extra_requirements else []
     self._platforms = platforms
     self._interpreter = interpreter or PythonInterpreter.get()
-    self._builder = builder or PEXBuilder(tempfile.mkdtemp(), interpreter=self._interpreter)
+    self._builder = builder or PEXBuilder(os.path.realpath(tempfile.mkdtemp()),
+                                          interpreter=self._interpreter)
     self._conn_timeout = conn_timeout
 
     # Note: unrelated to the general pants artifact cache.
@@ -73,10 +74,13 @@ class PythonChroot(object):
     self._key_generator = CacheKeyGenerator()
     self._build_invalidator = BuildInvalidator( self._egg_cache_root)
 
+  def delete(self):
+    """Deletes this chroot from disk if it has been dumped."""
+    safe_rmtree(self.path())
 
   def __del__(self):
     if os.getenv('PANTS_LEAVE_CHROOT') is None:
-      safe_rmtree(self.path())
+      self.delete()
     else:
       self.debug('Left chroot at %s' % self.path())
 
@@ -89,7 +93,7 @@ class PythonChroot(object):
       print('%s%s' % (' ' * indent, msg))
 
   def path(self):
-    return self._builder.path()
+    return os.path.realpath(self._builder.path())
 
   def _dump_library(self, library):
     def copy_to_chroot(base, path, add_function):

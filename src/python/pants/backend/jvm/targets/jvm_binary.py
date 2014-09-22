@@ -205,7 +205,6 @@ class JvmBinary(JvmTarget):
   * ``run`` - Executes the main class of this binary locally.
   """
   def __init__(self,
-               name=None,
                main=None,
                basename=None,
                source=None,
@@ -213,8 +212,6 @@ class JvmBinary(JvmTarget):
                deploy_jar_rules=None,
                **kwargs):
     """
-    :param string name: The name of this target, which combined with this
-      build file defines the :doc:`target address <target_addresses>`.
     :param string main: The name of the ``main`` class, e.g.,
       ``'com.pants.examples.hello.main.HelloMain'``. This class may be
       present as the source of this target or depended-upon library.
@@ -222,6 +219,8 @@ class JvmBinary(JvmTarget):
       ``'hello'``. (By default, uses ``name`` param)
     :param string source: Name of one ``.java`` or ``.scala`` file (a good
       place for a ``main``).
+    :param sources: Overridden by source. If you want more than one source
+      file, use a library and have the jvm_binary depend on that library.
     :param resources: List of ``resource``\s to include in bundle.
     :param dependencies: Targets (probably ``java_library`` and
      ``scala_library`` targets) to "link" in.
@@ -241,7 +240,7 @@ class JvmBinary(JvmTarget):
     :type configurations: tuple of strings
     """
     sources = [source] if source else None
-    super(JvmBinary, self).__init__(name=name, sources=self.assert_list(sources), **kwargs)
+    super(JvmBinary, self).__init__(sources=self.assert_list(sources), **kwargs)
 
     if main and not isinstance(main, Compatibility.string):
       raise TargetDefinitionException(self, 'main must be a fully qualified classname')
@@ -257,7 +256,7 @@ class JvmBinary(JvmTarget):
       raise TargetDefinitionException(self, 'deploy_jar_rules must be a JarRules specification')
 
     self.main = main
-    self.basename = basename or name
+    self.basename = basename or self.name
     self.deploy_excludes = self.assert_list(deploy_excludes, expected_type=Exclude)
     self.deploy_jar_rules = deploy_jar_rules or JarRules.default()
 
