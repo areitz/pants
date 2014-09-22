@@ -63,9 +63,7 @@ class PantsRunIntegrationTest(unittest.TestCase):
       fp.write(ini)
     env = os.environ.copy()
     env['PANTS_CONFIG_OVERRIDE'] = ini_file_name
-    if extra_env:
-      for key in extra_env:
-        env[key] = extra_env[key]
+    env.update(extra_env or {})
 
     pants_command = ([os.path.join(get_buildroot(), self.PANTS_SCRIPT_NAME)] + command +
                      ['--no-lock', '--kill-nailguns'])

@@ -617,14 +617,14 @@ class JarPublish(JarTask, ScmPublish):
 
         ivy_tmpl_key = "publish_extra-{0}{1}{2}".format(override_name, classifier, extension)
 
-        # Build a set of targets to check. This set will consist of the current target, plus the
+        # Build a list of targets to check. This list will consist of the current target, plus the
         # entire derived_from chain.
-        target_set = set([tgt])
+        target_list = [tgt]
         target = tgt
         while target.derived_from != target:
-          target_set.add(target.derived_from)
+          target_list.append(target.derived_from)
           target = target.derived_from
-        for cur_tgt in target_set:
+        for cur_tgt in target_list:
           if self.context.products.get(extra_product).has(cur_tgt):
             copy_artifact(cur_tgt, jar, version, typename=extra_product,
                           suffix=suffix, extension=extension,
