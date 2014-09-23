@@ -397,13 +397,13 @@ you'll create a ``publish_extras`` section under ``[jar-publish]`` in
 pants.ini, and add a key for the new product type. Your custom task will create
 the extra file(s) that you want to publish, and write the path to the products
 map under the key that you have defined in pants.ini. The publishing code will
-loop over all keys found in pants.ini, and consult the product map. When pants
+loop over all keys found in pants.ini, and consult the product map. If pants
 finds a file for the current key, it will gather it up, and bundle it in with
 the rest of the files being published.
 
 An example of a custom task is supplied in the
 ``examples/src/python/example/pants_publish_plugin`` directory. To use it, add
-the following to your pants.ini:
+the following to your pants.ini::
 
     [jar-publish]
     publish_extras: {
@@ -427,7 +427,7 @@ any additional files found.
 
 Constructing a name for your extra artifact:
 ============================================
-By default, pants uses the following scheme when publishing artifacts:
+By default, pants uses the following scheme when publishing artifacts::
 
     [artifactId]-[version](-[classifier]).[ext]
 
@@ -448,12 +448,12 @@ object, you can supply some extra parameters in the ``pants.ini`` file:
 **Note:** You must supply a non-default value for at least one of the above
 parameters, otherwise your extra publish artifact won't have a unique name.
 With the above config in your pants.ini, invoke pants like this, to do a test
-publish:
+publish::
 
     WRAPPER_SRCPATH=examples/src/python PANTS_DEV=1 ./pants goal publish examples/src/java/com/pants/examples/hello/greet --no-publish-dryrun --publish-local=~/tmp
 
 Now if you examine the ``/tmp`` directory, you'll notice that an extra jar has
-been published for the ``greet`` target:
+been published for the ``greet`` target::
 
     $ ls -1 /tmp/com/pants/examples/hello-greet/0.0.1-SNAPSHOT/|grep example
     hello-greet-extra_example-0.0.1-SNAPSHOT-classy.jar

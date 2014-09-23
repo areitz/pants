@@ -554,7 +554,7 @@ class JarPublish(JarTask, ScmPublish):
         return self.artifact_path(jar, version, name=name, suffix=suffix, extension=extension,
                                   artifact_ext=artifact_ext)
 
-      with safe_open(path(suffix='-CHANGELOG', extension='txt'), 'w') as changelog_file:
+      with safe_open(path(suffix='-CHANGELOG', extension='txt'), 'wb') as changelog_file:
         changelog_file.write(changelog.encode('utf-8'))
       ivyxml = path(name='ivy', extension='xml')
 
