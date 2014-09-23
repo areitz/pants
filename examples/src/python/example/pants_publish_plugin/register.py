@@ -10,4 +10,5 @@ from pants.goal.task_registrar import TaskRegistrar as task
 
 # Register this custom task on the 'jar' phase. When the RoundEngine reaches this phase, it will
 # execute all tasks that have previously registered for this phase.
-task(name='extra_test_jar_example', action=ExtraTestJarExample).install('jar')
+def register_goals():
+  task(name='extra_test_jar_example', action=ExtraTestJarExample).install('jar')

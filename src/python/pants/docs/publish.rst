@@ -367,6 +367,10 @@ set ``mutable=True`` and change the version number.
 Appendix A: Adding extra artifacts to the publish
 *************************************************
 
+.. TODO(lahosken) make this section its own page.
+   Remember link to it from this page and from dev_task
+   and to fix up the link from the sample code
+
 Pants supports "publish plugins", which allow end-users to add additional,
 arbitrary files to be published along with the primary artifact. For example,
 let's say that along with publishing your jar full of class files, you would
