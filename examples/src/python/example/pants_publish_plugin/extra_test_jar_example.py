@@ -31,8 +31,6 @@ class ExtraTestJarExample(JarTask):
   def execute(self):
     # Ensure that we have a work directory to create a temporary jar.
     safe_mkdir(self.workdir)
-    # Get all of the targets in the build graph.
-    targets = self.context.targets()
 
     # For each node in the graph that was selected below, create a jar, and store a reference to
     # the jar in the product map.
@@ -45,7 +43,7 @@ class ExtraTestJarExample(JarTask):
 
       # A sample file to stuff into the jar.
       example_file_name = os.path.join(self.workdir, "example.txt")
-      with open(example_file_name, 'w') as f:
+      with open(example_file_name, 'wb') as f:
         f.write("This is an example test file.\n")
 
       # Create a jar file to be published along with other artifacts for this target.
@@ -65,5 +63,5 @@ class ExtraTestJarExample(JarTask):
 
     # Loop over all of the targets in the graph, and select the ones that we wish to operate on.
     # This example selects all JavaLibrary targets, but different criteria can be specified below.
-    for target in targets:
-      target.walk(process, predicate=lambda target: isinstance(target, JavaLibrary))
+    for target in self.context.targets(lambda target: isinstance(target, JavaLibrary)):
+      process(target)

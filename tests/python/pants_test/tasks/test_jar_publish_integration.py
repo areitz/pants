@@ -15,13 +15,13 @@ from pants_test.pants_run_integration_test import PantsRunIntegrationTest
 from pants_test.tasks.test_base import is_exe
 
 def shared_artifacts(version, extra_jar=None):
-  ary = ['ivy-{0}.xml'.format(version),
-         'hello-greet-{0}.jar'.format(version),
-         'hello-greet-{0}.pom'.format(version),
-         'hello-greet-{0}-sources.jar'.format(version)]
+  published_file_list = ['ivy-{0}.xml'.format(version),
+                         'hello-greet-{0}.jar'.format(version),
+                         'hello-greet-{0}.pom'.format(version),
+                         'hello-greet-{0}-sources.jar'.format(version)]
   if extra_jar:
-    ary.append(extra_jar)
-  return {'com/pants/testproject/publish/hello-greet/{0}/'.format(version): ary}
+    published_file_list.append(extra_jar)
+  return {'com/pants/testproject/publish/hello-greet/{0}/'.format(version): published_file_list}
 
 def publish_extra_config(unique_config):
   return {
