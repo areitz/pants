@@ -7,6 +7,8 @@
 
 //testing 3
 
+// testing 4
+
 package com.pants.examples.hello.greet;
 
 import java.io.FileInputStream;
