@@ -3,6 +3,8 @@
 
 // testing
 
+// testing2
+
 package com.pants.examples.hello.greet;
 
 import java.io.FileInputStream;
