@@ -46,9 +46,16 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
 
   def setUp(self):
     safe_rmtree(self.pushdb_root)
+    # fixme
+    # record current git branch
+    # create git branch
+    # modify code in testproject
+    # commit w/ unicode message
 
   def tearDown(self):
     safe_rmtree(self.pushdb_root)
+    # switch back to previous branch
+    # remove tmp branch
 
   @pytest.mark.skipif('not JarPublishIntegrationTest.SCALADOC',
                       reason='No scaladoc binary on the PATH.')
