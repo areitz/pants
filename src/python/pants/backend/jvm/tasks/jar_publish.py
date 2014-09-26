@@ -709,9 +709,11 @@ class JarPublish(JarTask, ScmPublish):
           if no_changes:
             print(changelog)
           else:
-            print('\nChanges for %s since %s @ %s:\n\n%s' % (
+            output_str = '\nChanges for {0} since {1} @ {2}:\n\n{3}'.format(
               coordinate(jar.org, jar.name), oldentry.version(), oldentry.sha, changelog
-            ))
+            )
+            output_str_enc = output_str.encode('utf-8')
+            print(output_str)
           if os.isatty(sys.stdin.fileno()):
             push = raw_input('Publish %s with revision %s ? [y|N] ' % (
               coordinate(jar.org, jar.name), newentry.version()
