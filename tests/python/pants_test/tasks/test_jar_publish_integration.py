@@ -198,7 +198,6 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
     new_branch_name = "__DELETE_ME__jar_publish_test_{0}_{1}".format(os.getpid(), random.randint(1,1000000))
     subprocess.check_call(['git', 'checkout', '-b', new_branch_name])
     # Make a code change
-    #subprocess.check_call(['echo', '//testing', '>>', 'testprojects/src/java/com/pants/testproject/publish/hello/greet/Greeting.java'])
     with open('testprojects/src/java/com/pants/testproject/publish/hello/greet/Greeting.java', 'a') as java_file:
       java_file.write('// test comment')
 
