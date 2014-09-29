@@ -51,9 +51,11 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
 
   def setUp(self):
     safe_rmtree(self.pushdb_root)
+    self.cur_branch, self.new_branch = self.prepare_unicode_branch()
 
   def tearDown(self):
     safe_rmtree(self.pushdb_root)
+    self.teardown_unicode_branch(self.cur_branch, self.new_branch)
 
   @pytest.mark.skipif('not JarPublishIntegrationTest.SCALADOC',
                       reason='No scaladoc binary on the PATH.')
@@ -105,13 +107,11 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
   # Run through all the permutations of the config parameters for publish_extras.
   #
   def test_publish_extras_name_classifier(self):
-    cur_branch, new_branch = self.prepare_unicode_branch()
     self.publish_extras_runner(extra_config=publish_extra_config({
                                 'override_name': '{target_provides_name}-extra_example',
                                 'classifier': 'classy',
                                 }),
                                artifact_name='hello-greet-extra_example-0.0.1-SNAPSHOT-classy.jar')
-    self.teardown_unicode_branch(cur_branch, new_branch)
 
   def test_publish_extras_name(self):
     self.publish_extras_runner(extra_config=publish_extra_config({
