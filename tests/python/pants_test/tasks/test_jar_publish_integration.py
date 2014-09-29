@@ -7,8 +7,10 @@ from __future__ import (nested_scopes, generators, division, absolute_import, wi
 
 import os
 import pytest
+import random
+import subprocess
 
-from pants.base.build_environment import get_buildroot
+from pants.base.build_environment import get_buildroot, get_scm
 from pants.util.contextutil import temporary_dir
 from pants.util.dirutil import safe_rmtree
 from pants_test.pants_run_integration_test import PantsRunIntegrationTest
@@ -100,11 +102,13 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
   # Run through all the permutations of the config parameters for publish_extras.
   #
   def test_publish_extras_name_classifier(self):
+    cur_branch, new_branch = self.prepare_unicode_branch()
     self.publish_extras_runner(extra_config=publish_extra_config({
                                 'override_name': '{target_provides_name}-extra_example',
                                 'classifier': 'classy',
                                 }),
                                artifact_name='hello-greet-extra_example-0.0.1-SNAPSHOT-classy.jar')
+    self.teardown_unicode_branch(cur_branch, new_branch)
 
   def test_publish_extras_name(self):
     self.publish_extras_runner(extra_config=publish_extra_config({
@@ -184,3 +188,17 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
         for artifact in artifact_list:
           artifact_path = os.path.join(publish_dir, directory, artifact)
           self.assertTrue(os.path.exists(artifact_path))
+
+  def prepare_unicode_branch(self):
+    scm = get_scm()
+    current_branch = scm.branch_name
+    new_branch_name = "XXX_jar_publish_test_{0}_{1}".format(os.gitpid(), random.randint(1,1000000))
+    subprocess.check_call(['git', 'checkout', '-b', new_branch_name])
+    # Make a code change
+    subprocess.check_call(['echo', '//testing', '>>', 'testprojects/src/java/com/pants/testproject/publish/hello/greet/Greeting.java'])
+    subprocess.check_call(['git', 'commit', '-am', u'test commit: emdash: — – ‒'])
+    return current_branch, new_branch_name
+
+  def teardown_unicode_branch(self, cur_branch, orig_branch):
+    subprocess.call('git', 'checkout', orig_branch)
+    subprocess.call('git', 'branch', '-D', cur_branch)
