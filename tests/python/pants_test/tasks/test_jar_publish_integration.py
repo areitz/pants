@@ -204,6 +204,6 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
     subprocess.check_call(['git', 'commit', '-am', u'test commit: emdash: — – ‒'])
     return current_branch, new_branch_name
 
-  def teardown_unicode_branch(self, cur_branch, orig_branch):
+  def teardown_unicode_branch(self, orig_branch, cur_branch):
     subprocess.call(['git', 'checkout', orig_branch])
     subprocess.call(['git', 'branch', '-D', cur_branch])
