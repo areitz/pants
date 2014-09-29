@@ -708,11 +708,13 @@ class JarPublish(JarTask, ScmPublish):
         if not self.dryrun:
           # Confirm push looks good
           if no_changes:
-            print(changelog)
+            print(changelog.encode('utf-8'))
           else:
-            print('\nChanges for %s since %s @ %s:\n\n%s' % (
+            changelog_str = '\nChanges for {0} since {1} @ {2}:\n\n{3}'.format(
               coordinate(jar.org, jar.name), oldentry.version(), oldentry.sha, changelog
-            ))
+            )
+            changelog_str = changelog_str.encode('utf-8')
+            print(changelog_str)
           if os.isatty(sys.stdin.fileno()):
             push = raw_input('Publish %s with revision %s ? [y|N] ' % (
               coordinate(jar.org, jar.name), newentry.version()

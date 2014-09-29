@@ -195,7 +195,7 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
   def prepare_unicode_branch(self):
     scm = get_scm()
     current_branch = scm.branch_name
-    new_branch_name = "XXX_jar_publish_test_{0}_{1}".format(os.getpid(), random.randint(1,1000000))
+    new_branch_name = "__DELETE_ME__jar_publish_test_{0}_{1}".format(os.getpid(), random.randint(1,1000000))
     subprocess.check_call(['git', 'checkout', '-b', new_branch_name])
     # Make a code change
     #subprocess.check_call(['echo', '//testing', '>>', 'testprojects/src/java/com/pants/testproject/publish/hello/greet/Greeting.java'])
