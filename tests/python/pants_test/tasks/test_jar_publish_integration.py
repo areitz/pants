@@ -197,9 +197,11 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
     #FIXME scm = get_scm()
     os.chdir(self.workdir)
 
+    import pytest; pytest.set_trace()
+
     # Create a clone in the tmpdir, based off of the clone that we were already working in. Any
     # changes made in this clone won't be reflected in the main clone.
-    subprocess.check_call(['git', 'clone', '-l', '-q', get_buildroot()])
+    subprocess.check_call(['git', 'clone', '-l', '-q', get_buildroot(), '.'])
 
     current_branch = "master"
     subprocess.check_call(['git', 'checkout', current_branch])
