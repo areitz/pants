@@ -12,7 +12,7 @@ import subprocess
 
 from pants.base.build_environment import get_buildroot, get_scm
 from pants.util.contextutil import temporary_dir
-from pants.util.dirutil import safe_rmtree
+from pants.util.dirutil import safe_mkdtemp, safe_rmtree
 from pants_test.pants_run_integration_test import PantsRunIntegrationTest
 from pants_test.tasks.test_base import is_exe
 
@@ -47,9 +47,10 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
   # This is where all pushdb properties files will end up.
   @property
   def pushdb_root(self):
-    return os.path.join(get_buildroot(), 'testprojects', 'ivy', 'pushdb')
+    return os.path.join(self.workdir, 'testprojects', 'ivy', 'pushdb')
 
   def setUp(self):
+    self.workdir = safe_mkdtemp()
     safe_rmtree(self.pushdb_root)
     self.cur_branch, self.new_branch = self.prepare_unicode_branch()
 
@@ -174,7 +175,7 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
         options.extend(extra_options)
 
       yes = 'y' * expected_primary_artifact_count
-      pants_run = self.run_pants(['goal', 'publish', target] + options, config=extra_config,
+      pants_run = self.run_pants_with_workdir(['goal', 'publish', target] + options, self.workdir, config=extra_config,
                                  stdin_data=yes, extra_env=extra_env)
 
       if success_expected:
@@ -193,10 +194,18 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
           self.assertTrue(os.path.exists(artifact_path))
 
   def prepare_unicode_branch(self):
-    scm = get_scm()
-    current_branch = scm.branch_name
+    #FIXME scm = get_scm()
+    os.chdir(self.workdir)
+
+    # Create a clone in the tmpdir, based off of the clone that we were already working in. Any
+    # changes made in this clone won't be reflected in the main clone.
+    subprocess.check_call(['git', 'clone', '-l', '-q', get_buildroot()])
+
+    current_branch = "master"
+    subprocess.check_call(['git', 'checkout', current_branch])
     new_branch_name = "__DELETE_ME__jar_publish_test_{0}_{1}".format(os.getpid(), random.randint(1,1000000))
     subprocess.check_call(['git', 'checkout', '-b', new_branch_name])
+
     # Make a code change
     with open('testprojects/src/java/com/pants/testproject/publish/hello/greet/Greeting.java', 'a') as java_file:
       java_file.write('// test comment')
