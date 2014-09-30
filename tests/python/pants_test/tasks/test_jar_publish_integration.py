@@ -10,7 +10,7 @@ import pytest
 import random
 import subprocess
 
-from pants.base.build_environment import get_buildroot, get_scm
+from pants.base.build_environment import get_buildroot
 from pants.util.contextutil import temporary_dir
 from pants.util.dirutil import safe_mkdtemp, safe_rmtree
 from pants_test.pants_run_integration_test import PantsRunIntegrationTest
@@ -44,20 +44,41 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
   SCALADOC = is_exe('scaladoc')
   JAVADOC = is_exe('javadoc')
 
-  # This is where all pushdb properties files will end up.
-  @property
-  def pushdb_root(self):
-    return os.path.join(self.workdir, 'testprojects', 'ivy', 'pushdb')
+  # Initialize the temporary git repo, and create a branch that has unicode in it. For performance
+  # reasons, it's important to only do this once for the entire module. Ideally, I'd use unittest2's
+  # setUpModule() / tearDownModule() methods, but they don't work for some reason...
+  #
+  # FIXME(areitz): switch to unittest2's setUpModule() / tearDownModule() methods
+  def __init__(self, *args, **kwargs):
+    super(JarPublishIntegrationTest, self).__init__(*args, **kwargs)
+
+    self.pants_repo_dir = safe_mkdtemp()
+    os.chdir(self.pants_repo_dir)
+
+    # Create a clone in the tmpdir, based off of the clone that we were already working in. Any
+    # changes made in this clone won't be reflected in the main clone.
+    subprocess.check_call(['git', 'clone', '-l', '-q', get_buildroot(), '.'])
+
+    # Add a hard link to the pants.pex from the repo that launched these tests in the new clone, so
+    # that we don't have to re-bootstrap pants.
+    src_pex = os.path.join(get_buildroot(), "pants.pex")
+    dst_pex = os.path.join(self.pants_repo_dir, "pants.pex")
+    os.link(src_pex, dst_pex)
+
+    self.workdir = self.workdir_root(self.pants_repo_dir)
+    self.cur_branch, self.new_branch = self.prepare_unicode_branch()
+
+    # This is where all pushdb properties files will end up.
+    self.pushdb_root = os.path.join(self.pants_repo_dir, 'testprojects', 'ivy', 'pushdb')
+
+  def __del__(self):
+    safe_rmtree(self.pants_repo_dir)
 
   def setUp(self):
-    self.pants_repo_dir = safe_mkdtemp()
-    self.workdir = self.workdir_root(self.pants_repo_dir)
     safe_rmtree(self.pushdb_root)
-    self.cur_branch, self.new_branch = self.prepare_unicode_branch()
 
   def tearDown(self):
     safe_rmtree(self.pushdb_root)
-    self.teardown_unicode_branch(self.cur_branch, self.new_branch)
 
   @pytest.mark.skipif('not JarPublishIntegrationTest.SCALADOC',
                       reason='No scaladoc binary on the PATH.')
@@ -175,7 +196,6 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
       if extra_options:
         options.extend(extra_options)
 
-      # FIXME(areitz): where does the 'testing' repo come from?
       yes = 'y' * expected_primary_artifact_count
       pants_run = self.run_pants_in_repo_with_workdir(['goal', 'publish', target] + options,
                                                       self.pants_repo_dir, self.workdir,
@@ -198,18 +218,9 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
           self.assertTrue(os.path.exists(artifact_path))
 
   def prepare_unicode_branch(self):
-    #FIXME scm = get_scm()
-    os.chdir(self.workdir)
-
-    #import pytest; pytest.set_trace()
-
-    # Create a clone in the tmpdir, based off of the clone that we were already working in. Any
-    # changes made in this clone won't be reflected in the main clone.
-    subprocess.check_call(['git', 'clone', '-l', '-q', get_buildroot(), '.'])
-
     current_branch = "master"
     subprocess.check_call(['git', 'checkout', current_branch])
-    new_branch_name = "__DELETE_ME__jar_publish_test_{0}_{1}".format(os.getpid(), random.randint(1,1000000))
+    new_branch_name = "__DELETE_ME__test_jar_publish_integration_{0}_{1}".format(os.getpid(), random.randint(1,1000000))
     subprocess.check_call(['git', 'checkout', '-b', new_branch_name])
 
     # Make a code change
@@ -219,6 +230,3 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
     subprocess.check_call(['git', 'commit', '-am', u'test commit: emdash: — – ‒'])
     return current_branch, new_branch_name
 
-  def teardown_unicode_branch(self, orig_branch, cur_branch):
-    subprocess.call(['git', 'checkout', orig_branch])
-    subprocess.call(['git', 'branch', '-D', cur_branch])

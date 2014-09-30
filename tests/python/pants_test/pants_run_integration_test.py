@@ -23,7 +23,7 @@ class PantsRunIntegrationTest(unittest.TestCase):
   """A base class useful for integration tests for targets in the same repo."""
 
   PANTS_SUCCESS_CODE = 0
-  PANTS_SCRIPT_NAME = 'pants'
+  PANTS_SCRIPT_NAME = 'pants.pex'
 
   @classmethod
   def has_python_version(cls, version):
@@ -72,6 +72,7 @@ class PantsRunIntegrationTest(unittest.TestCase):
     proc = subprocess.Popen(pants_command, env=env, stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)
     (stdout_data, stderr_data) = proc.communicate(stdin_data)
+
     return PantsResult(pants_command, proc.returncode, stdout_data, stderr_data)
 
   def run_pants_with_workdir(self, command, workdir, config=None, stdin_data=None, extra_env=None, **kwargs):
