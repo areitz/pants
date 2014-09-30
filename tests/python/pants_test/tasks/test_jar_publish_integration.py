@@ -50,7 +50,8 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
     return os.path.join(self.workdir, 'testprojects', 'ivy', 'pushdb')
 
   def setUp(self):
-    self.workdir = safe_mkdtemp()
+    self.pants_repo_dir = safe_mkdtemp()
+    self.workdir = self.workdir_root(self.pants_repo_dir)
     safe_rmtree(self.pushdb_root)
     self.cur_branch, self.new_branch = self.prepare_unicode_branch()
 
@@ -176,8 +177,10 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
 
       # FIXME(areitz): where does the 'testing' repo come from?
       yes = 'y' * expected_primary_artifact_count
-      pants_run = self.run_pants_with_workdir(['goal', 'publish', target] + options, self.workdir, config=extra_config,
-                                 stdin_data=yes, extra_env=extra_env)
+      pants_run = self.run_pants_in_repo_with_workdir(['goal', 'publish', target] + options,
+                                                      self.pants_repo_dir, self.workdir,
+                                                      config=extra_config, stdin_data=yes,
+                                                      extra_env=extra_env)
 
       if success_expected:
         self.assert_success(pants_run, "'pants goal publish' expected success, but failed instead.")

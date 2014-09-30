@@ -37,16 +37,16 @@ class PantsRunIntegrationTest(unittest.TestCase):
     except OSError:
       return False
 
-  def workdir_root(self):
+  def workdir_root(self, buildroot=get_buildroot()):
     # We can hard-code '.pants.d' here because we know that will always be its value
     # in the pantsbuild/pants repo (e.g., that's what we .gitignore in that repo).
     # Grabbing the pants_workdir config would require this pants's config object,
     # which we don't have a reference to here.
-    root = os.path.join(get_buildroot(), '.pants.d', 'tmp')
+    root = os.path.join(buildroot, '.pants.d', 'tmp')
     safe_mkdir(root)
     return root
 
-  def run_pants_with_workdir(self, command, workdir, config=None, stdin_data=None, extra_env=None, **kwargs):
+  def run_pants_in_repo_with_workdir(self, command, repodir, workdir, config=None, stdin_data=None, extra_env=None, **kwargs):
     config = config.copy() if config else {}
 
     # We add workdir to the DEFAULT section, and also ensure that it's emitted first.
@@ -66,14 +66,16 @@ class PantsRunIntegrationTest(unittest.TestCase):
     env['PANTS_CONFIG_OVERRIDE'] = ini_file_name
     env.update(extra_env or {})
 
-    # FIXME(areitz): need to break this out into a separate method that can run from a fresh clone (don't use get_buildroot())
-    pants_command = ([os.path.join(get_buildroot(), self.PANTS_SCRIPT_NAME)] + command +
+    pants_command = ([os.path.join(repodir, self.PANTS_SCRIPT_NAME)] + command +
                      ['--no-lock', '--kill-nailguns'])
 
     proc = subprocess.Popen(pants_command, env=env, stdin=subprocess.PIPE,
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)
     (stdout_data, stderr_data) = proc.communicate(stdin_data)
     return PantsResult(pants_command, proc.returncode, stdout_data, stderr_data)
+
+  def run_pants_with_workdir(self, command, workdir, config=None, stdin_data=None, extra_env=None, **kwargs):
+    self.run_pants_in_repo_with_workdir(command, get_buildroot(), workdir, config, stdin_data, extra_env, **kwargs)
 
   def run_pants(self, command, config=None, stdin_data=None, extra_env=None, **kwargs):
     """Runs pants in a subprocess.
