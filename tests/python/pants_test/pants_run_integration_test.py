@@ -66,6 +66,7 @@ class PantsRunIntegrationTest(unittest.TestCase):
     env['PANTS_CONFIG_OVERRIDE'] = ini_file_name
     env.update(extra_env or {})
 
+    # FIXME(areitz): need to break this out into a separate method that can run from a fresh clone (don't use get_buildroot())
     pants_command = ([os.path.join(get_buildroot(), self.PANTS_SCRIPT_NAME)] + command +
                      ['--no-lock', '--kill-nailguns'])
 

@@ -174,6 +174,7 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
       if extra_options:
         options.extend(extra_options)
 
+      # FIXME(areitz): where does the 'testing' repo come from?
       yes = 'y' * expected_primary_artifact_count
       pants_run = self.run_pants_with_workdir(['goal', 'publish', target] + options, self.workdir, config=extra_config,
                                  stdin_data=yes, extra_env=extra_env)
@@ -197,7 +198,7 @@ class JarPublishIntegrationTest(PantsRunIntegrationTest):
     #FIXME scm = get_scm()
     os.chdir(self.workdir)
 
-    import pytest; pytest.set_trace()
+    #import pytest; pytest.set_trace()
 
     # Create a clone in the tmpdir, based off of the clone that we were already working in. Any
     # changes made in this clone won't be reflected in the main clone.
