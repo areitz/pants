@@ -38,6 +38,7 @@ from pants.backend.core.tasks.what_changed import WhatChanged
 from pants.backend.core.wrapped_globs import Globs, RGlobs, ZGlobs
 from pants.base.build_environment import get_buildroot, pants_version
 from pants.base.build_file_aliases import BuildFileAliases
+from pants.base.exceptions import TargetDefinitionException
 from pants.base.source_root import SourceRoot
 from pants.goal.task_registrar import TaskRegistrar as task
 
@@ -52,17 +53,12 @@ class BuildFilePath(object):
 
 
 class PantsObsolete(object):
-  _warning_emitted = False
 
   @classmethod
   def pants(cls, target):
-    if not cls._warning_emitted:
-      cls._warning_emitted = True
-      print('*** pants() wrapper is obsolete and will be removed in a future release. '
-            'See http://pantsbuild.github.io/build_files.html ***',
-            file=sys.stderr)
-    return target
-
+    raise TargetDefinitionException(target, 'The `pants()` wrapper is obsolete and has been removed. '
+          'See http://pantsbuild.github.io/build_files.html#what-happened-to-the-pants-wrapper-around-targets '
+          'for more information.')
 
 def build_file_aliases():
   return BuildFileAliases.create(
