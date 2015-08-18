@@ -56,7 +56,7 @@ class BuildFilePath(object):
 class PantsObsolete(object):
 
   @classmethod
-  @deprecated('0.0.50')
+  @deprecated('0.0.46')
   def pants(cls, target):
     raise TargetDefinitionException(target, 'The `pants()` wrapper is obsolete and has been removed. '
           'See http://pantsbuild.github.io/build_files.html#what-happened-to-the-pants-wrapper-around-targets '
