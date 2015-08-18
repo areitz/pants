@@ -413,7 +413,7 @@ attribute had to be wrapped in a call to the `pants()` method:
 
 The `pants()` method has since been replaced with a noop and as of Pants 0.0.24 is officially
 deprecated. As of pants 0.0.43, use of this method now triggers an exception. Thus, the above
-snippet should be re-written to use the target as a plain string.
+snippet should be re-written to use the target as a plain string:
 
     :::python
     java_library(name='foo',
