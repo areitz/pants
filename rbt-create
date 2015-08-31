@@ -21,4 +21,27 @@ if [[ ${REVIEWERS} ]]; then
   REVIEWERS_FLAG="--target-people=${REVIEWERS}"
 fi
 
-./rbt post -o -g ${REVIEWERS_FLAG} "$@"
+while :; do
+  categories=( "API Change" "Bugfix" "New Feature" "Small Improvement" )
+  echo "Choose a category for this patch:"
+  echo ""
+  for (( i=0; i < ${#categories[@]}; i++)); do
+    echo "  ${i}: ${categories[$i]}"
+  done
+  echo ""
+  read -p "Chosen category: " chosen
+
+  if [ ${chosen} -lt 0 -o ${chosen} -gt ${#categories[@]} ]; then
+    echo ""
+    echo "Sorry, '${chosen}' isn't a valid choice."
+    echo ""
+  else
+    # The value is good
+    break
+  fi
+done
+
+# FIXME: this is fairly crude, and doesn't exactly replicate the logic used by `rbt`.
+SUMMARY_GUESS=`git show -s --pretty=format:%B | head -1`
+
+./rbt post -o -g ${REVIEWERS_FLAG} --summary "[${categories[$chosen]}] ${SUMMARY_GUESS}" "$@"

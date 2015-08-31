@@ -2,8 +2,8 @@
 
 # Convenient shortcut script for updating an existing Pants rbt review:
 #
-# ./rbt-update <other flags>
+# ./rbt-update <RB_ID> [other flags]
 #
 # will update the existing review, passing the flags through to rbt.
 
-./rbt post -o -u "$@"
+./rbt post -o -r "$@"

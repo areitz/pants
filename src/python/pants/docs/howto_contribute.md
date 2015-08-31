@@ -180,29 +180,29 @@ to kick off a Travis-CI run against your change.
 Post your change for review:
 
     :::bash
-    $ ./rbt post -o -g
+    $ ./rbt-create [user1] [user2] [other flags]
 
-The first time you `post`, rbt asks you to log in. Subsequent runs use
+The first time you run `rbt-create`, rbt asks you to log in. Subsequent runs use
 your cached login credentials.
 
-This `post` creates a new review, but does not yet publish it.
+This will prompt you to choose a category for your change. Choosing a category helps the pants
+releasers make accurate changelog entries. Once you choose a category, `rbt-create` creates a new
+review, but does not yet publish it.
 
-At the provided URL, there's a web form. To get your change reviewed,
-you must fill in the change description, reviewers, testing done, etc.
-To make sure it gets seen by the appropriate people and that they have
-the appropriate context, add:
+At the provided URL, there's a web form. To get your change reviewed, you must fill in the change
+description, reviewers (if you didn't specify any on the command-line), testing done, etc. To make
+sure it gets seen by the appropriate people and that they have the appropriate context, add:
 
 - `pants-reviews` to the Groups field
 - Any specific reviewers to the People field
 - The pull request number from your Github pull request in the Bug field
 - Your git branch name in the Branch field.
 
-When the review looks good, publish it. An email will be sent to the
-`pants-reviews` mailing list and the reviewers will take a look. (For
-your first review, double-check that the mail got sent; rbcommons tries
-to "spoof" mail from you and it doesn't work for everybody's email
-address. If your address doesn't work, you might want to use another
-one.)
+When the review looks good, publish it. An email will be sent to the `pants-reviews` mailing list
+and the reviewers will take a look. (For your first review, [double-check that the mail got
+sent](https://groups.google.com/forum/#!forum/pants-reviews); rbcommons tries to "spoof" mail from
+you and it doesn't work for everybody's email address. If your address doesn't work, you might want
+to use another one.)
 
 #### Iterating
 
@@ -216,7 +216,7 @@ code, commit locally. To update the code review with the new diff where
 `<RB_ID>` is a review number like `123`:
 
     :::bash
-    $ ./rbt post -o -r <RB_ID>
+    $ ./rbt-update <RB_ID>
 
 Look over the fields in the web form; perhaps some could use updating.
 Press the web form's Publish button.
