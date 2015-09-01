@@ -21,8 +21,8 @@ if [[ ${REVIEWERS} ]]; then
   REVIEWERS_FLAG="--target-people=${REVIEWERS}"
 fi
 
-nice_categories=( "API Change" "Bugfix" "New Feature" "Small Improvement" )
-machine_categories=( "API" "BUGFIX" "FEATURE" "IMPROVEMENT" )
+nice_categories=( "API Change" "Bugfix" "New Feature" "Small Improvement" "Documentation" "Testing Improvement")
+machine_categories=( "API" "BUGFIX" "FEATURE" "IMPROVEMENT" "DOC" "TEST" )
 while :; do
   echo "Categories help the pants releasers build a proper changelog, highlighting your improvement. The possible categories are:"
   echo ""
