@@ -21,17 +21,18 @@ if [[ ${REVIEWERS} ]]; then
   REVIEWERS_FLAG="--target-people=${REVIEWERS}"
 fi
 
+nice_categories=( "API Change" "Bugfix" "New Feature" "Small Improvement" )
+machine_categories=( "API" "BUGFIX" "FEATURE" "IMPROVEMENT" )
 while :; do
-  categories=( "API Change" "Bugfix" "New Feature" "Small Improvement" )
   echo "Categories help the pants releasers build a proper changelog, highlighting your improvement. The possible categories are:"
   echo ""
-  for (( i=0; i < ${#categories[@]}; i++)); do
-    echo "  ${i}: ${categories[$i]}"
+  for (( i=0; i < ${#nice_categories[@]}; i++)); do
+    echo "  ${i}: ${nice_categories[$i]}"
   done
   echo ""
   read -p "Choose a category for this change: " chosen
 
-  if [ ${chosen} -lt 0 -o ${chosen} -gt ${#categories[@]} ]; then
+  if [ ${chosen} -lt 0 -o ${chosen} -gt ${#nice_categories[@]} ]; then
     echo ""
     echo "Sorry, '${chosen}' isn't a valid choice."
     echo ""
@@ -46,7 +47,7 @@ Tested in CI: <paste Travis CI URL>
 
 Manual testing steps: <insert here, if any>
 
-Changelog category: ${categories[$chosen]}
+Changelog category: ${machine_categories[$chosen]}
 EOM)
 
 ./rbt post -o -g ${REVIEWERS_FLAG} --testing-done "${DEFAULT_TESTING}" "$@"
