@@ -23,13 +23,13 @@ fi
 
 while :; do
   categories=( "API Change" "Bugfix" "New Feature" "Small Improvement" )
-  echo "Choose a category for this patch:"
+  echo "Categories help the pants releasers build a proper changelog, highlighting your improvement. The possible categories are:"
   echo ""
   for (( i=0; i < ${#categories[@]}; i++)); do
     echo "  ${i}: ${categories[$i]}"
   done
   echo ""
-  read -p "Chosen category: " chosen
+  read -p "Choose a category for this change: " chosen
 
   if [ ${chosen} -lt 0 -o ${chosen} -gt ${#categories[@]} ]; then
     echo ""
@@ -41,7 +41,12 @@ while :; do
   fi
 done
 
-# FIXME: this is fairly crude, and doesn't exactly replicate the logic used by `rbt`.
-SUMMARY_GUESS=`git show -s --pretty=format:%B | head -1`
+DEFAULT_TESTING=$(cat <<EOM
+Tested in CI: <paste Travis CI URL>
 
-./rbt post -o -g ${REVIEWERS_FLAG} --summary "[${categories[$chosen]}] ${SUMMARY_GUESS}" "$@"
+Manual testing steps: <insert here, if any>
+
+Changelog category: ${categories[$chosen]}
+EOM)
+
+./rbt post -o -g ${REVIEWERS_FLAG} --testing-done "${DEFAULT_TESTING}" "$@"
