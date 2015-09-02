@@ -187,7 +187,8 @@ your cached login credentials.
 
 This will prompt you to choose a category for your change. Choosing a category helps the pants
 releasers make accurate changelog entries. Once you choose a category, `rbt-create` creates a new
-review, but does not yet publish it.
+review, but does not yet publish it. (*Note:* if you create your Reviewboard by some other means,
+you'll still want to add a category, at the end of the "Testing Done" section).
 
 At the provided URL, there's a web form. To get your change reviewed, you must fill in the change
 description, reviewers (if you didn't specify any on the command-line), testing done, etc. To make

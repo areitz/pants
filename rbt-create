@@ -24,7 +24,7 @@ fi
 nice_categories=( "API Change" "Bugfix" "New Feature" "Small Improvement" "Documentation" "Testing Improvement")
 machine_categories=( "API" "BUGFIX" "FEATURE" "IMPROVEMENT" "DOC" "TEST" )
 while :; do
-  echo "Categories help the pants releasers build a proper changelog, highlighting your improvement. The possible categories are:"
+  echo "Changes can be slotted in the following categories, for changelog purposes:"
   echo ""
   for (( i=0; i < ${#nice_categories[@]}; i++)); do
     echo "  ${i}: ${nice_categories[$i]}"
