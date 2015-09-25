@@ -18,8 +18,8 @@ python_library(
   name='resource_mapper',
   sources=['resource_mapper.py'],
   dependencies=[
-    'pants-plugins/3rdparty:pants',
-    'src/python/twitter/common/contextutil',
-    'src/python/twitter/common/dirutil',
+    'src/python/pants/bin',
+    '3rdparty/python/twitter/commons:twitter.common.contextutil',
+    '3rdparty/python/twitter/commons:twitter.common.dirutil',
   ]
 )

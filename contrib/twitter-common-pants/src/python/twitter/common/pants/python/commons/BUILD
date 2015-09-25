@@ -23,7 +23,7 @@ python_library(
   name='remote_python_thrift_fileset',
   sources=['remote_python_thrift_fileset.py'],
   dependencies=[
-    'pants-plugins/3rdparty:pants',
+    'src/python/pants/bin',
   ]
 )
 
@@ -31,7 +31,7 @@ python_library(
   name='version',
   sources=['version.py'],
   dependencies=[
-    'pants-plugins/3rdparty:pants',
+    'src/python/pants/bin',
   ]
 )
 

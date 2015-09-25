@@ -13,12 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==================================================================================================
+contrib_plugin(
+  name='plugin',
+  dependencies=[
+    'contrib/twitter-common-pants/src/python/twitter/common/pants/jvm/args:plugin',
+    'src/python/pants/goal:task_registrar',
+  ],
+  distribution_name='pantsbuild.pants.contrib.twitter.common.pants',
+  description='Pants plugins from twitter.commons',
+  additional_classifiers=[
+    'Topic :: Software Development :: Code Generators'
+  ],
+  register_goals=True,
+)
 
 python_library(
-  name='plugin',
+  name='plugin2',
   sources=['register.py'],
   dependencies=[
-    'pants-plugins/3rdparty:pants',
-    'pants-plugins/src/python/twitter/common/pants/jvm/args/tasks:resource_mapper'
+    'src/python/pants/bin',
+    'contrib/twitter-common-pants/src/python/twitter/common/pants/jvm/args/tasks:resource_mapper'
   ],
 )

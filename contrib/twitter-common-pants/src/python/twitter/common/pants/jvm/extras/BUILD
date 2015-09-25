@@ -18,6 +18,6 @@ python_library(
   name='plugin',
   sources=['register.py'],
   dependencies=[
-    'pants-plugins/3rdparty:pants',
+    'src/python/pants/bin',
   ]
 )
