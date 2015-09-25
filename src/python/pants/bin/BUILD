@@ -51,9 +51,20 @@ python_binary(
 python_binary(
   name='pants_local_binary',
   entry_point='pants.bin.pants_exe:main',
+  zip_safe=False,
   dependencies=[
     ':bin',
     'pants-plugins/src/python/internal_backend:plugins',
     'src/python/pants/backend/android:plugin',
+    'contrib/scrooge/src/python/pants/contrib/scrooge:plugin',
+    'contrib/go/src/python/pants/contrib/go:plugin',
+#    ':tcpants_args',
+  ],
+)
+
+python_requirement_library(
+  name='tcpants_args',
+  requirements=[
+    python_requirement('twitter.common.pants==0.8.3'),
   ],
 )
